@@ -1,0 +1,26 @@
+name: Float scheduled imports
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 * * * *'
+permissions:
+  contents: read
+concurrency:
+  group: float-scheduled-import
+  cancel-in-progress: false
+jobs:
+  import:
+    if: vars.FLOAT_SCHEDULE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Import due invoices and deliver cash alerts
+        env:
+          FLOAT_SITE_URL: ${{ secrets.FLOAT_SITE_URL }}
+          FLOAT_JOB_TOKEN: ${{ secrets.FLOAT_JOB_TOKEN }}
+          FLOAT_SITES_ACCESS_TOKEN: ${{ secrets.FLOAT_SITES_ACCESS_TOKEN }}
+        run: node scripts/run-float-job.mjs

@@ -1,0 +1,12 @@
+export type Invoice = { id: string; client: string; description: string; amountCents: number; dueDate: string; expectedDate: string; status: 'open' | 'paid' };
+export type Expense = { id: string; name: string; amountCents: number; date: string; recurrence: 'none' | 'monthly' };
+export type Settings = { thresholdCents: number; sourceUrl: string; importHour: number; webhookUrl: string; alertsEnabled: boolean };
+export type ImportRun = { id: string; at: string; status: 'succeeded' | 'failed' | 'skipped' | 'running'; rowCount: number; message: string; jobKey?: string; leaseUntil?: string };
+export type Alert = { id: string; at: string; status: 'queued' | 'delivered' | 'failed'; minimumCents: number; minimumDate: string; message: string; attempts: number; nextAttemptAt?: string; leaseUntil?: string };
+export type LedgerState = { revision: number; balanceCents: number; asOf: string; currency: 'EUR'; invoices: Invoice[]; expenses: Expense[]; settings: Settings; importRuns: ImportRun[]; alerts: Alert[]; breachActive?: boolean };
+export type FloatState = LedgerState;
+export type State = LedgerState;
+export type ForecastOptions = { days?: number; delayDays?: number; excludedInvoiceIds?: string[] };
+export type ForecastPoint = { date: string; balanceCents: number; incomeCents: number; expenseCents: number };
+export type Forecast = { points: ForecastPoint[]; minimumCents: number; minimumDate: string; firstTightDate: string | null; receivablesCents: number; payablesCents: number; priorities: { invoiceId: string; impactCents: number; daysOverdue: number }[] };
+export type Action = { type: string; expectedRevision?: number; [key: string]: unknown };
